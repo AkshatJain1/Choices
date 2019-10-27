@@ -12,7 +12,7 @@ foods = [
   {'Japanese': ['Sushi', 'Tempura', 'Yakitori', 'Tsukemono pickles', 'Kaiseki', 'Udon', 'Soba', 'Sukiyaki', 'Sashimi', 'Miso soup']},
   {'Indian': ['Butter Chicken', 'Tandoori Chicken', 'Chicken Tikka Masala', 'Red Lamb', 'Malai Kofta', 'Chole', 'Palak Paneer', 'Kaali Daal', 'Papdi Chaat', 'Naan']},
   {'American': ['Apple Pie', 'Hamburger', 'Clam Chowder', 'Bagel and Lox', 'Deep-Dish Pizza', 'Drop Biscuits and Sausage Gravy', 'Texas Barbecue', 'Hominy Grits', 'Buffalo Chicken Wings']},
-  {'Mediterranean': ['Feta', 'Lentils  & Yogurt', 'Spanakopita', 'Baba Ganoush', 'Hummus', 'Mediterranean Cobb Salad', 'Paella', 'Fish', 'Ratatouille', 'Greek Gyros', 'Tuscan Chicken']},
+  {'Mediterranean': ['Feta', 'Lentils & Yogurt', 'Spanakopita', 'Baba Ganoush', 'Hummus', 'Mediterranean Cobb Salad', 'Paella', 'Fish', 'Ratatouille', 'Greek Gyros', 'Tuscan Chicken']},
   {'Thai': ['Tom Yum Goong', 'Som tum', 'Tom kha kai', 'Gaeng daeng', 'Pad Thai','Khao Pad', 'Pad krapow moo', 'Gaeng keow wan kai', 'Yum nua', 'Kai med ma muang']},
   {'Vietnamese': ['Pho', 'Banh Mi', 'Banh Xeo', 'Goi Cuon', 'Mi Quang', 'Bun Thit Nuong', 'Com Tam', 'Banh Cuon', 'Xoi Xeo', 'Ca Kho To']},
   {'French': ['Bouillabaisse', 'Quiche Lorraine', 'Steak-Frites', 'Coq au vin', 'Bœuf Bourguignon', 'Cassoulet', 'Escargots de Bourgogne', 'Moules mariníères', 'Choucroute Garnie', 'Sole Meunière']},
@@ -32,23 +32,23 @@ class Cuisine extends Component {
     console.log(item);
     Animated.timing(val, {
        toValue: (val._value == 150 ? 0 : 150),
-       duration: 1000
+       duration: 500
     }).start();
 
      item.checked = !item.checked
   };
 
   render() {
-    const interpolateColor = val => {
+    const interpolateBGColor = val => {
       return val.interpolate({
         inputRange: [0, 150],
-        outputRange: ['rgb(255,255,0)', 'rgb(51, 250, 170)']
+        outputRange: ['rgb(255, 205, 145)', 'rgb(228,95,28)']
       })
     };
 
     const animatedStyle = val => {
       return {
-        backgroundColor: interpolateColor(val),
+        backgroundColor: interpolateBGColor(val),
       }
     };
 
@@ -63,6 +63,7 @@ class Cuisine extends Component {
       cu[cu.length - 1] = isCollapsed;
     };
     return (
+
       <Collapse
   	        isCollapsed={cu[cu.length - 1]}
   	        onToggle={(isCollapsed)=> setCollapsed(isCollapsed)}>
@@ -132,28 +133,66 @@ export default class Preferences extends Component{
     // <Cuisine cuisineIndex = index />
     return (
       <View style = {styles.container}>
+      <Text style={styles.title}>
+            Preferences
+      </Text>
       <FlatList
         data = {foods}
-        contentContainerStyle={{flexGrow: 1, justifyContent: 'space-evenly'}}
+        contentContainerStyle={{flexGrow: 0.5, justifyContent: 'space-evenly'}}
         renderItem = {({ item, index }) => <Cuisine in = {index} name = {Object.keys(item)[0]}/>}
         keyExtractor={(item,index) => index.toString()}
       />
-      <Button onPress = {this.savePrefrences} title = 'Save' />
+      <TouchableOpacity
+          style={styles.customBtnBG}
+          onPress={() => {}}  >
+          <Text style={styles.customBtnText}>Save</Text>
+        </TouchableOpacity>
+
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  customBtnText: {
+    fontSize: 30,
+    color: '#00b5ec',
+    fontWeight: 'bold',
+    alignItems:'center',
+    justifyContent: 'center',
+  },
+  customBtnBG: {
+    backgroundColor: '#e45f1c',
+    paddingHorizontal: 15,
+    paddingVertical: 2,
+    
+    borderRadius: 30,
+    marginBottom: 40,
+    alignItems:'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#00b5ec',
   },
+  title: {
+      marginTop: 70,
+      color: '#e45f1c',
+      fontWeight: 'bold',
+      fontSize: 30,
+      width:250,
+      height:40,
+      textAlign: 'center',
+      alignItems:'center',
+      justifyContent: 'center',
+      marginBottom: 30,
+  },
   header: {
+      marginBottom: 20,
       backgroundColor: '#FFFFFF',
-      borderRadius:0,
+      borderRadius:15,
       width:250,
       height:30,
       alignItems:'center',
@@ -161,7 +200,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
   },
   bubble: {
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#e45f1c',
       borderRadius:30,
       overflow: 'scroll',
       marginTop: 5,
@@ -172,6 +211,9 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
   },
   food_item: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    justifyContent: 'center',
     marginLeft: 15
   }
 })
