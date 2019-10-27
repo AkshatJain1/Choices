@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import {googleAPIKey as googleKey} from './app.json';
 import Geolocation from 'react-native-geolocation-service';
-import {PermissionsAndroid, Platform} from 'react-native';
+import {PermissionsAndroid} from 'react-native';
 
 
 
@@ -20,13 +20,9 @@ export default class Scan extends Component{
     this.getLocation = this.getLocation.bind(this);
     this.openCamera = this.openCamera.bind(this);
     this.getRestaurant = this.getRestaurant.bind(this);
-    if (Platform.OS === 'android') {
-      this.requestLocationPermission()
-    }
-    else {
-      this.getLocation()
-      this.openCamera()
-    }
+    this.aggregateRestaurantReviews = this.aggregateRestaurantReviews.bind(this);
+
+    this.requestLocationPermission();
   }
 
   getLocation = () => {
@@ -100,14 +96,36 @@ export default class Scan extends Component{
     }
   }
 
-  getRestaurant = () =>{
+  getRestaurant = () => {
     fetch(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants&location=${this.state.position.coords.latitude},${this.state.position.coords.longitude}&radius=5&key=${googleKey}`)
       .then(response => response.json())
       .then(response => {
-          this.setState({restaurantName: response.results[0].name, restaurantAddress: response.results[0].formatted_address})
-          console.log(this.state.restaurantName, this.state.restaurantAddress);
+          this.setState({restaurantGoogleId: response.results[0].place_id ,restaurantName: response.results[0].name, restaurantAddress: response.results[0].formatted_address})
+          console.log(this.state.restaurantGoogleId, this.state.restaurantName, this.state.restaurantAddress);
+          this.aggregateRestaurantReviews();
       })
       .catch(error => console.error(error))
+  }
+
+  aggregateRestaurantReviews = () => {
+    totalReviews = []
+    //google reviews
+    fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${this.state.restaurantGoogleId}&key=${googleKey}`)
+      .then(response => response.json())
+      .then(response => {
+        google_reviews = response.result.reviews;
+        google_reviews.forEach(review => totalReviews.push(review.text))
+        this.setState({totalReviews})
+
+      })
+      .catch(error => console.error(error))
+  }
+
+  popularItems = () => {
+      reviews = this.state.totalReviews //list of strings
+      menuItems = [[], [], [], []] // list [[menu_item_name, price] ... ]
+
+      //return the top 5 popular menu items based on reviews (how many times the item was mentioned in the review)
   }
 
 

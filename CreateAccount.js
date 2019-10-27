@@ -21,14 +21,18 @@ export default class CreateAccount extends Component {
       email   : '',
       password: '',
     }
+
+    this.onClickListener = this.onClickListener.bind(this);
   }
 
-  onClickListener = async (viewId) => {
+  onClickListener = async () => {
     // store in AsyncStorage
     try {
       await AsyncStorage.setItem('@username', this.state.fullName)
+      console.log('setting item');
     } catch (e) {
       // saving error
+      console.error(e);
     }
     //navigate to dietary restrictions page
     this.props.navigation.navigate('Dietary');
@@ -37,12 +41,13 @@ export default class CreateAccount extends Component {
   render() {
     return (
       <View style={styles.container}>
-        
-        <Image style={styles.contain} source={{uri: 'https://i.imgur.com/HX6pJYu.png'}}/> 
+
+        <Image style={styles.contain} source={{uri: 'https://i.imgur.com/HX6pJYu.png'}}/>
         <View style={styles.inputContainer}>
           <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/male-user/ultraviolet/50/3498db'}}/>
           <TextInput style={styles.inputs}
               placeholder="Full name"
+              required
               keyboardType="email-address"
               underlineColorAndroid='transparent'
               onChangeText={(fullName) => this.setState({fullName})}/>
@@ -66,7 +71,7 @@ export default class CreateAccount extends Component {
               onChangeText={(password) => this.setState({password})}/>
         </View>
 
-        <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={() => this.onClickListener('sign_up')}>
+        <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={this.onClickListener}>
           <Text style={styles.signUpText}>Sign up</Text>
         </TouchableHighlight>
       </View>
