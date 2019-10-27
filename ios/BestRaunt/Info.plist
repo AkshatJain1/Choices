@@ -4,6 +4,15 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	 <string>$(PRODUCT_NAME) would like access to your photo gallery</string>
+	 <key>NSCameraUsageDescription</key>
+	 <string>$(PRODUCT_NAME) would like to use your camera</string>
+	 <key>NSPhotoLibraryAddUsageDescription</key>
+	 <string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
+	 <key>NSMicrophoneUsageDescription</key>
+	 <string>$(PRODUCT_NAME) would like to use your microphone (for videos)</string>
+
 	<key>CFBundleDisplayName</key>
 	<string>BestRaunt</string>
 	<key>CFBundleExecutable</key>
