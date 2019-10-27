@@ -100,7 +100,7 @@ export default class Preferences extends Component{
     this.state = {};
   }
 
-  savePrefrences = () => {
+  savePrefrences = async () => {
     console.log('save pref');
     // store in AsyncStorage
 
@@ -117,16 +117,15 @@ export default class Preferences extends Component{
     console.log(data);
 
 
-    // try {
-    //
-    //   // await AsyncStorage.setItem('@prefrences', data)
-    // } catch (e) {
-    //   // saving error
-    //   console.log(e);
-    // }
+    try {
+      await AsyncStorage.setItem('@prefrences', data)
+    } catch (e) {
+      // saving error
+      console.log(e);
+    }
 
-    //navigate to dietary restrictions page
-    // this.props.navigation.navigate('Preferences');
+    // navigate to scan page
+    this.props.navigation.navigate('Scan');
   }
 
   render() {

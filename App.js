@@ -11,6 +11,7 @@ const RegistrationStack = createSwitchNavigator({
   CreateAccount: CreateAccount,
   Dietary: Dietary,
   Preferences: Preferences,
+  Scan: Scan,
 })
 
 const RegistrationContainer = createAppContainer(RegistrationStack, {
