@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@google-cloud/language": "^3.5.1",
     "@react-native-community/async-storage": "^1.6.2",
     "accordion-collapse-react-native": "^0.1.11",
     "react": "16.9.0",

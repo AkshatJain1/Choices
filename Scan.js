@@ -4,8 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import {googleAPIKey as googleKey} from './app.json';
 import Geolocation from 'react-native-geolocation-service';
-import {PermissionsAndroid} from 'react-native';
-
+import {PermissionsAndroid, Platform} from 'react-native';
 
 
 
@@ -20,9 +19,15 @@ export default class Scan extends Component{
     this.getLocation = this.getLocation.bind(this);
     this.openCamera = this.openCamera.bind(this);
     this.getRestaurant = this.getRestaurant.bind(this);
+    if (Platform.OS === 'android') {
+      this.requestLocationPermission();
+    }
+    else {
+      this.getLocation()
+      this.openCamera()
+    }
     this.aggregateRestaurantReviews = this.aggregateRestaurantReviews.bind(this);
 
-    this.requestLocationPermission();
   }
 
   getLocation = () => {
@@ -121,12 +126,31 @@ export default class Scan extends Component{
       .catch(error => console.error(error))
   }
 
-  popularItems = () => {
-      reviews = this.state.totalReviews //list of strings
-      menuItems = [[], [], [], []] // list [[menu_item_name, price] ... ]
+  // popularItems = () => {
+  //   top5 = []
+  //   countForItem = len(reviews) * [[]]
+  //   reviews = this.state.totalReviews //list of strings
+  //   menuItems = [['a', 5.0], ['b', 2.0], ['c', 2.5], ['d', 6.5], ['e', 1.0], ['f', 7.7]]// list [[menu_item_name, price] ... ]
+  //   fetch(`https://language.googleapis.com/v1beta2/documents:analyzeSentiment?document=${this.state.totalReviews}&key=${googleKey}`)
+  //     .then(response => response.json())
+  //     .then(response => {
+  //       document_sentiment = response.documentSentiment.score;
+  //       document_sentiment.forEach(r => reviews.push(r.text))
+  //       count = 0
+  //       for lst in menuItems:
+  //         for r in reviews:
+  //           if lst[0] in r:
+  //             countForItem[index(lst)] += [0]
+  //         top5.append(menuItems[index(max(countForItem))])
+  //         count += 1
+  //         if count == 5:
+  //           return top5
+  //       this.setState({top5})
 
-      //return the top 5 popular menu items based on reviews (how many times the item was mentioned in the review)
-  }
+  //     })
+
+  //     //return the top 5 popular menu items based on reviews (how many times the item was mentioned in the review)
+  // }
 
 
 
