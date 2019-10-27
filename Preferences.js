@@ -144,8 +144,8 @@ export default class Preferences extends Component{
       />
       <TouchableOpacity
           style={styles.customBtnBG}
-          onPress={() => {}}  >
-          <Text style={styles.customBtnText}>Save</Text>
+          onPress={this.savePrefrences}  >
+          <Text style={styles.customBtnText}>Submit</Text>
         </TouchableOpacity>
 
       </View>
