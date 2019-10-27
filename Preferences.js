@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, FlatList, Button, TouchableOpacity, Animated} from 'react-native';
 import {Collapse, CollapseHeader, CollapseBody} from "accordion-collapse-react-native";
+import AsyncStorage from '@react-native-community/async-storage';
 
 const AnimatedButton = Animated.createAnimatedComponent(TouchableOpacity)
 
@@ -56,7 +57,7 @@ class Cuisine extends Component {
     cu = foods[this.props.in][this.props.name]
     for(let i = 0; i < cu.length - 1; i++){
       foods_comp.push(
-        <AnimatedButton style = {[styles.bubble, animatedStyle(cu[i].animated_value)]} onPress = {() => this.onBubbleClick(foods[this.props.in][this.props.name][i])}><Text style = {styles.food_item}>{cu[i].dishName}</Text></AnimatedButton>
+        <AnimatedButton key = {i.toString()} style = {[styles.bubble, animatedStyle(cu[i].animated_value)]} onPress = {() => this.onBubbleClick(foods[this.props.in][this.props.name][i])}><Text style = {styles.food_item}>{cu[i].dishName}</Text></AnimatedButton>
       )
     }
     const setCollapsed = (isCollapsed) => {
@@ -118,7 +119,7 @@ export default class Preferences extends Component{
 
 
     try {
-      await AsyncStorage.setItem('@prefrences', data)
+      await AsyncStorage.setItem('@prefrences', JSON.stringify(data))
     } catch (e) {
       // saving error
       console.log(e);
