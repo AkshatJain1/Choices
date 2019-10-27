@@ -39,12 +39,12 @@ export default class Dietary extends Component{
   saveDietary = async () => {
     // store in AsyncStorage
     try {
-      await AsyncStorage.setItem('@dietary', this.restr.map(item => {
+      await AsyncStorage.setItem('@dietary', JSON.stringify(this.restr.map(item => {
         return {
           title: item.title,
           checked: item.checked,
         }
-      }))
+      })))
     } catch (e) {
       // saving error
     }

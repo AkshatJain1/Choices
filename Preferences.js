@@ -118,7 +118,7 @@ export default class Preferences extends Component{
 
 
     try {
-      await AsyncStorage.setItem('@prefrences', data)
+      await AsyncStorage.setItem('@prefrences', JSON.stringify(data))
     } catch (e) {
       // saving error
       console.log(e);
