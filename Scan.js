@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import {googleAPIKey as googleKey} from './app.json';
 import Geolocation from 'react-native-geolocation-service';
-import {PermissionsAndroid} from 'react-native';
+import {PermissionsAndroid, Platform} from 'react-native';
 
 
 
@@ -20,8 +20,13 @@ export default class Scan extends Component{
     this.getLocation = this.getLocation.bind(this);
     this.openCamera = this.openCamera.bind(this);
     this.getRestaurant = this.getRestaurant.bind(this);
-
-    this.requestLocationPermission();
+    if (Platform.OS === 'android') {
+      this.requestLocationPermission()
+    }
+    else {
+      this.getLocation()
+      this.openCamera()
+    }
   }
 
   getLocation = () => {
