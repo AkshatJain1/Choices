@@ -37,6 +37,8 @@ export default class CreateAccount extends Component {
   render() {
     return (
       <View style={styles.container}>
+        
+        <Image style={styles.contain} source={{uri: 'https://i.imgur.com/HX6pJYu.png'}}/> 
         <View style={styles.inputContainer}>
           <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/male-user/ultraviolet/50/3498db'}}/>
           <TextInput style={styles.inputs}
@@ -79,6 +81,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#00b5ec',
   },
+  contain: {
+    width: 250,
+    height: 175,
+    justifyContent: 'center',
+    resizeMode: 'contain'
+  },
   inputContainer: {
       borderBottomColor: '#F5FCFF',
       backgroundColor: '#FFFFFF',
@@ -112,7 +120,7 @@ const styles = StyleSheet.create({
     borderRadius:30,
   },
   signupButton: {
-    backgroundColor: "#FF4DFF",
+    backgroundColor: "#e45f1c",
   },
   signUpText: {
     color: 'white',
