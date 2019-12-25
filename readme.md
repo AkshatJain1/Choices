@@ -3,6 +3,6 @@
 An app to tell you your menu prefrences
 
 # Contributors
-- Pranav Krishnamoorthi (Server/Backend Lead)
+- Pranav Krishnamoorthi (Server/Backend)
 - Akshat Jain (Frontend/Backend)
-- Rohit Mehta (iOS/UI Lead)
+- Rohit Mehta (iOS/UI)
