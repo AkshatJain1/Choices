@@ -1,0 +1,17 @@
+{
+  "name": "choices",
+  "displayName": "choices",
+  "expo": {
+    "name": "choices",
+    "slug": "choices",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
