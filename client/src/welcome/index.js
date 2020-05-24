@@ -1,26 +1,19 @@
-import React, {Component, useRef, useEffect} from 'react';
+import React, {Component} from 'react';
 import {View, StyleSheet, ImageBackground, Animated} from 'react-native';
 import { Text } from '@ui-kitten/components';
-
-
 
 
 const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
-
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#00b5ec',
     },
     image: {
-        flex: 1,
-        width: 300,
-        height: 300,
-        resizeMode: "cover",
-        justifyContent: "center",
-        marginTop: 30
+        alignItems: 'center',
+        justifyContent: "flex-end",
     },
 });
   
@@ -29,12 +22,31 @@ const styles = StyleSheet.create({
 export default class Welcome extends Component {
 
     state = {
-        fadeAnim: new Animated.Value(0)
+        fadeAnim: new Animated.Value(0),
+        show: new Animated.Value(0),
+        topImage: new Animated.Value(5.5),
+        botImage: new Animated.Value(5.5)
     }
 
     constructor(props) {
         super(props);
         this.fadeIn();
+
+        Animated.timing(this.state.topImage, {
+            toValue: 3,
+            duration: 2000
+        }).start();
+        Animated.timing(this.state.botImage, {
+            toValue: 8,
+            duration: 2000
+        }).start(this.textFadeIn);
+    }
+
+    textFadeIn = () => {
+        Animated.timing(this.state.show, {
+            toValue: 1,
+            duration: 800
+        }).start();
     }
 
     fadeIn = () => {
@@ -42,7 +54,7 @@ export default class Welcome extends Component {
         Animated.timing(this.state.fadeAnim, {
           toValue: 1,
           duration: 1000
-        }).start(() => this.fadeOut());
+        }).start(this.fadeOut);
     };
 
     fadeOut = () => {
@@ -50,31 +62,34 @@ export default class Welcome extends Component {
         Animated.timing(this.state.fadeAnim, {
             toValue: 0,
             duration: 1000
-        }).start(() => this.fadeIn());
+        }).start(this.fadeIn);
     };    
     
     render() {
         return (
             <View style={styles.container} onTouchEnd={() => this.props.navigation.navigate('Dietary')}>
-                <View style={{flex: 4, justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-                    <ImageBackground 
-                        source={require('../img/chef.png')} 
-                        style={styles.image} 
-                        imageStyle={{ borderRadius: 25 }} >
+
+                <Animated.View style={{flex: this.state.topImage}}></Animated.View>
+                <ImageBackground 
+                    source={require('../img/chef.png')} 
+                    style={[styles.image, {flex: 5}]} 
+                    imageStyle={{ borderRadius: 25 }} >
                         <Text category='h1'
-                            style={{textAlign: 'center', color: 'white', marginTop: 180}}>
+                            style={{marginLeft:70, marginRight:70, color: 'white', fontWeight: 'bold'}}>
                             Choices
                         </Text>
-                    </ImageBackground>
-                </View>
-                <View style={{flex: 5, justifyContent: 'flex-start', alignItems: 'center'}}>
+                </ImageBackground>
+                <Animated.View style={{flex: this.state.botImage}}></Animated.View>
+            
+                <Animated.View style={{ opacity: this.state.show, position: 'absolute', bottom: 300 }}>
                     <Text category="h3" style={{textAlign: 'center'}}>
                         Welcome to a {"\n"}
                         <Text category="h3" status="primary">
                             new food experience
                         </Text>
                     </Text>
-                </View>
+                </Animated.View>
+                
 
                 <Animated.View
                     style={{
@@ -83,8 +98,11 @@ export default class Welcome extends Component {
                         bottom: 100
                     }}
                 >
-                <Text style={{color: 'white'}} category="p1" appearance="hint">Tap to continue . . .</Text>
-              </Animated.View>
+                    <Text style={{color: 'white'}} category="p1" appearance="hint">
+                        Tap to continue . . .
+                    </Text>
+                </Animated.View>
+
             </View>
         );
     }

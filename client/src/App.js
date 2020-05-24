@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, StatusBar} from 'react-native';
+import {View, StyleSheet, StatusBar, AsyncStorage} from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import AsyncStorage from '@react-native-community/async-storage';
+// import AsyncStorage from '@react-native-community/async-storage';
 
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
@@ -32,7 +32,6 @@ class App extends Component {
     this.state = {initialRoute : 'Welcome'};
 
     // set state's initialRoute appropriately
-    this.loadInitialScreen = this.loadInitialScreen.bind(this);
     this.loadInitialScreen();
   }
 
