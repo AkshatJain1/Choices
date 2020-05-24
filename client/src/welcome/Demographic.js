@@ -5,7 +5,7 @@ import { Input, Card, Text, Datepicker, IndexPath, Select, SelectItem, Button } 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 
-const RACES = [
+export const RACES = [
     'White', 
     'Black or African American', 
     'American Indian or Alaska Native',
@@ -13,7 +13,7 @@ const RACES = [
     'Native Hawaiian or Other Pacific Islander'
 ];
 
-const GENDERS =[
+export const GENDERS =[
     'Male',
     'Female',
     'Other'
@@ -107,7 +107,7 @@ export default class Demographic extends Component {
                         position: 'absolute',
                         bottom: 100
                     }}>
-                    <Button status='primary' size='large' onPress={() => this.props.navigation.navigate('Preferences')}>
+                    <Button status='primary' size='large' onPress={() => this.props.navigation.navigate('Preferences', this.state)}>
                         Continue
                     </Button>
                 </View>
