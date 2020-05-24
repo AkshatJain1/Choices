@@ -67,7 +67,7 @@ export default class Welcome extends Component {
     
     render() {
         return (
-            <View style={styles.container} onTouchEnd={() => this.props.navigation.navigate('Dietary')}>
+            <View style={styles.container} onTouchEnd={() => this.props.navigation.navigate('Demographic')}>
 
                 <Animated.View style={{flex: this.state.topImage}}></Animated.View>
                 <ImageBackground 

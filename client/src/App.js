@@ -12,12 +12,12 @@ import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 */
 import Welcome from './welcome';
 import Preferences from './welcome/Preferences';
-import Dietary from './welcome/Dietary';
+import Demographic from './welcome/Demographic';
 import Scan from './home/Scan';
 
 const RegistrationStack = createSwitchNavigator({
   Welcome: Welcome,
-  Dietary: Dietary,
+  Demographic: Demographic,
   Preferences: Preferences,
   Scan: Scan,
 })
