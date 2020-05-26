@@ -10,8 +10,15 @@ limit_users = 10
 limit_food_items = 10   #calcula
 #distancefactor
 dist_inc_factor = 1
-dist_dec_factor = 1
+dist_dec_factor = 5
 #incrase to have more effect by the distance
+
+dist_buffer = 1
+#controls how much distance needs to be to start making a large effect on the weight
+
+num_weight_inc_factor = 1
+num_weight_dec_factor = 1
+#how much affect that the amount of times we've run into a menu item and added it through preferences
 
 #d
 #might need to include foodWeights in actual function iself
@@ -43,19 +50,24 @@ dist_dec_factor = 1
 
 
 db = {}
-with open('server/traversal_test_2.json') as f:
+with open('server/traversal_test_5.json') as f:
     db = json.load(f)
 
-
 currentUserMenuWeights = {}
+currentMenuCount = {}
 dist_from_curr_user = {}
 #menu_items are id's of the menu items
 def user_item_traversal(curr_user_id, menu_items):
+    global currentUserMenuWeights
+    global currentMenuCount
+    global UserMenuRatings
     currentUserMenuWeights = {}
+    currentMenuCount = {}
     UserMenuRatings = {}
     #NOTE: this user menu ratings thing may/may not be useless
     dist_from_curr_user = {}
 
+    latest_menu_item = None
 
     fringe_deque = collections.deque()
     fringe_deque.append(curr_user_id)
@@ -111,6 +123,8 @@ def user_item_traversal(curr_user_id, menu_items):
       # and once we reach a user node, we go through the list of items we have added and add the user id to those. The connection will have some magnitude edge value as well
 
         elif db[node_id]['info']['type'] == 'food_item':
+            if node_id in menu_items:
+                latest_menu_item = node_id
             for adj_node_id in db[node_id]['user_connections']:
             #similarity should be done here, when the user is connected, not when the user is removed
             #will figure out the specifics later\
@@ -119,13 +133,10 @@ def user_item_traversal(curr_user_id, menu_items):
                     user_marked[adj_node_id] = True
                     dist_from_curr_user[adj_node_id] = dist_from_curr_user[node_id] + 1
 
-                if node_id in menu_items:
-                    #will change soon so that it checks for cached, just to get barebone working (clear )
-                    current_food_item_marked.clear()
 
                 dist_curr_to_user = dist_from_curr_user.get(adj_node_id, 0)
                 print("Dist curr to user ", dist_curr_to_user)
-                currentUserMenuWeights[node_id] = curr_user_item_pref(dist_curr_to_user, curr_user_id, adj_node_id, node_id)
+                currentUserMenuWeights[node_id] = curr_user_item_pref(dist_curr_to_user, curr_user_id, adj_node_id, node_id, latest_menu_item)
                 if adj_node_id not in UserMenuRatings:
                     UserMenuRatings[adj_node_id] = {}
                 elif node_id not in UserMenuRatings[adj_node_id]:
@@ -133,15 +144,16 @@ def user_item_traversal(curr_user_id, menu_items):
                     UserMenuRatings[adj_node_id][node_id] = obj_user_item_pref(adj_node_id, node_id)
              #then go into the other food nodes for similar items that the user has had before
             if node_id in menu_items:
+                current_food_item_marked.clear()
 
-               for adj_node_id in db[node_id].get('food_item_connections', {}):
-                   #CODE INSERT HERE: marking needs to be done
-                   current_food_item_marked[adj_node_id] = True
-                   if adj_node_id not in menu_items:
-                       fringe_deque.appendleft(adj_node_id)
-                       dist_from_curr_user[adj_node_id] = dist_from_curr_user[node_id] + 1
+                for adj_node_id in db[node_id].get('food_item_connections', {}):
+                    #CODE INSERT HERE: marking needs to be done
+                    current_food_item_marked[adj_node_id] = True
+                    if adj_node_id not in menu_items:
+                        fringe_deque.appendleft(adj_node_id)
+                        dist_from_curr_user[adj_node_id] = dist_from_curr_user[node_id] + 1
 
-          #check for whether the food item is in the menu
+                        #check for whether the food item is in the menu
             else:
               if not current_food_item_marked[node_id]:
                   #do similarity between items test here
@@ -162,14 +174,27 @@ def user_item_traversal(curr_user_id, menu_items):
 
 #Testing functions, will greatly develop in futuredist_from_curr_user = {}
 #pass the currentUserMenuWeights as a paramaRter
-def curr_user_item_pref(distance, curr_user_id, user_id,food_item_id):
-        return currentUserMenuWeights.get(food_item_id, 0) + user_similarity(curr_user_id, user_id) * dist_based_user_item_pref(distance, user_id, food_item_id)
+def curr_user_item_pref(distance, curr_user_id, user_id,food_item_id, latest_menu_item):
+        #Thoughts, perhaps we should do it so that the similarity will be based on the
+        global currentMenuCount
+        if latest_menu_item not in currentMenuCount:
+            currentMenuCount[latest_menu_item] = 0
+
+        distance_based_pref = dist_based_user_item_pref(distance, user_id, food_item_id)
+
+        if distance_based_pref != 0:
+            currentMenuCount[latest_menu_item] += 1
+            weightToAdd = (user_similarity(curr_user_id, user_id) * distance_based_pref) * (num_weight_dec_factor / currentMenuCount[latest_menu_item]*num_weight_inc_factor)
+        else:
+            weightToAdd = 0
+
+        return currentUserMenuWeights.get(food_item_id, 0) + weightToAdd
 
 #How much a particular user prefers an item, and weighted by how far away this preference is from the obj
 def  dist_based_user_item_pref(dist_curr_to_user, user_id, food_item_id):
 
     print("dist from " + user_id, dist_curr_to_user)
-    return obj_user_item_pref(user_id, food_item_id) * (dist_dec_factor / (dist_curr_to_user*dist_inc_factor + 1))
+    return obj_user_item_pref(user_id, food_item_id) * (dist_dec_factor / ((dist_curr_to_user + dist_buffer)*dist_inc_factor + 1))
 
 #The objective preference of the user to an item
 def obj_user_item_pref(user_id, food_item_id):
