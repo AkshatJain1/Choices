@@ -1,13 +1,17 @@
 import collections
 import json
-
-
+import sys
+import math
+#NOTE: THE RECOMMENDATION SHOULD NOT ONLY BE WEIGHTED BY DISTANCE FROM USER, BUT MUCH MORE SO BY THE DIFFERENCE IN THE CURRENTMENUWEIGHT AND THE THE WEIGHT OF THE USER
 
 L = 5
 K = 5
 limit_users = 10
 limit_food_items = 10   #calcula
-constant1 = 1
+#distancefactor
+dist_inc_factor = 1
+dist_dec_factor = 1
+#incrase to have more effect by the distance
 
 #d
 #might need to include foodWeights in actual function iself
@@ -35,11 +39,11 @@ constant1 = 1
 
 
                   #node is a food item
+#NOTE: CAREFUL WITH FIELDS NOT UPDATING WITH FUNCTION CALL
 
 
-
-
-with open('server/traversal_test_1.json') as f:
+db = {}
+with open('server/traversal_test_2.json') as f:
     db = json.load(f)
 
 
@@ -48,6 +52,9 @@ dist_from_curr_user = {}
 #menu_items are id's of the menu items
 def user_item_traversal(curr_user_id, menu_items):
     currentUserMenuWeights = {}
+    UserMenuRatings = {}
+    #NOTE: this user menu ratings thing may/may not be useless
+    dist_from_curr_user = {}
 
 
     fringe_deque = collections.deque()
@@ -59,6 +66,7 @@ def user_item_traversal(curr_user_id, menu_items):
 
     user_marked[curr_user_id] = True
     dist_from_curr_user[curr_user_id] = 0
+
 
 
 
@@ -80,14 +88,23 @@ def user_item_traversal(curr_user_id, menu_items):
         #node is a0 user
         #quesiton: should a user traverse other food items they have eaten also (besides ones scanned in)
         #answer: no because if it ends up connecting from one of past menu items to current menu itesm the connection will lead back to user in the first place
-        if db[node_id]['info']['type'] == 'user':
+        if node_id not in db:
+            #NOTE: here we actually create the item, in the very small chance item not in database
+            print("Item not even in databse!")
+            sys.exit(1)
+
+
+        elif db[node_id]['info']['type'] == 'user':
             for menu_item in menu_items:  #need to mark the menuitem if it was traversed
                 #check to see if user is the current user or if the user has eaten the menu item or not
                 if curr_user_id == node_id or menu_item in db[node_id]['food_item_connections']:
-                    if menu_item_marked.get(menu_item, False) == False:
+                    if not menu_item_marked.get(menu_item, False):
                         fringe_deque.append(menu_item)
                         menu_item_marked[menu_item] = True
                         dist_from_curr_user[menu_item] = dist_from_curr_user[node_id] + 1
+
+                        print(menu_item)
+                        print(dist_from_curr_user[menu_item])
                     # currentUserMenuWeight[food_item_id] = curr_user_item_pref(curr_user_id, user_id, food_item_id, weightSoFar)
                     #dist_from_curr_user[node_id] = dist_from_curr_user[menu_item] + 1
       #IDEA TO BE IMPLEMENTED: For the extended food item algorithm. As we go through the extended food item list, we keep track of the items,
@@ -96,16 +113,24 @@ def user_item_traversal(curr_user_id, menu_items):
         elif db[node_id]['info']['type'] == 'food_item':
             for adj_node_id in db[node_id]['user_connections']:
             #similarity should be done here, when the user is connected, not when the user is removed
-            #will figure out the specifics later
+            #will figure out the specifics later\
+                if not user_marked.get(adj_node_id, False):
+                    fringe_deque.append(adj_node_id)
+                    user_marked[adj_node_id] = True
+                    dist_from_curr_user[adj_node_id] = dist_from_curr_user[node_id] + 1
+
                 if node_id in menu_items:
                     #will change soon so that it checks for cached, just to get barebone working (clear )
                     current_food_item_marked.clear()
 
-                currentUserMenuWeights[node_id] = curr_user_item_preference(curr_user_id, adj_node_id, node_id)
-                if not user_marked[adj_node_id]:
-                    fringe_deque.append(adj_node_id)
-                    user_marked[adj_node_id] = True
-                    dist_from_curr_user[adj_node_id] = dist_from_curr_user[node_id] + 1
+                dist_curr_to_user = dist_from_curr_user.get(adj_node_id, 0)
+                print("Dist curr to user ", dist_curr_to_user)
+                currentUserMenuWeights[node_id] = curr_user_item_pref(dist_curr_to_user, curr_user_id, adj_node_id, node_id)
+                if adj_node_id not in UserMenuRatings:
+                    UserMenuRatings[adj_node_id] = {}
+                elif node_id not in UserMenuRatings[adj_node_id]:
+                    #warning: redudant computation here as computed in the curr user pref funciton already
+                    UserMenuRatings[adj_node_id][node_id] = obj_user_item_pref(adj_node_id, node_id)
              #then go into the other food nodes for similar items that the user has had before
             if node_id in menu_items:
 
@@ -128,34 +153,37 @@ def user_item_traversal(curr_user_id, menu_items):
 
         print("Current User Menu Weights: ")
         print(currentUserMenuWeights)
+        print("Current Distances")
+        print(dist_from_curr_user)
 
-    print("Final Current User Menu Weights")
+    print("\nFinal Current User Menu Weights")
     print({db[k]['info']['name']:v for (k,v) in sorted(currentUserMenuWeights.items(), key = lambda item : item[1], reverse = True)})
 
 
-#Testing functions, will greatly develop in future
+#Testing functions, will greatly develop in futuredist_from_curr_user = {}
 #pass the currentUserMenuWeights as a paramaRter
-def curr_user_item_preference(curr_user_id, user_id,food_item_id):
-        return currentUserMenuWeights.get(food_item_id, 0) + user_item_preference(user_id, food_item_id)
+def curr_user_item_pref(distance, curr_user_id, user_id,food_item_id):
+        return currentUserMenuWeights.get(food_item_id, 0) + user_similarity(curr_user_id, user_id) * dist_based_user_item_pref(distance, user_id, food_item_id)
 
-def user_item_preference(user_id, food_item_id):
-    print(dist_from_curr_user)
-    objective_preference = db[user_id]['food_item_connections'].get(food_item_id, 0)
-    return objective_preference * (constant1 / (dist_from_curr_user[user_id] + 1))
+#How much a particular user prefers an item, and weighted by how far away this preference is from the obj
+def  dist_based_user_item_pref(dist_curr_to_user, user_id, food_item_id):
 
+    print("dist from " + user_id, dist_curr_to_user)
+    return obj_user_item_pref(user_id, food_item_id) * (dist_dec_factor / (dist_curr_to_user*dist_inc_factor + 1))
 
+#The objective preference of the user to an item
+def obj_user_item_pref(user_id, food_item_id):
+    return db[user_id]['food_item_connections'].get(food_item_id, 0)
 
+#how similar a user is to another
+def user_similarity(user_id_1, user_id_2):
+    if user_id_1 == user_id_2:
+        return 1
+    print("Similarity:" )
+    print(db[user_id_1]['user_connections'].get(user_id_2, 0))
+    return db[user_id_1]['user_connections'].get(user_id_2, 0)
 #functions that will be determined later
 # def user_item_pref(user_id, item_id):
 #     pass
 def item_item_similarity(item_id_1, item_id_2):
     pass
-def user_user_similarity(user_id_1, user_id_2):
-    pass
-
-
-#Traversal Test 1
-#Will hard code user preferences for certain menu items already
-#Assume that all the items are on the menu, and that the user has only had that particular food item at that point of time
-#Assume that we are not considering similar items (including items that are just the item without any restaurant)
-user_item_traversal("NodeID1", ["NodeID2","NodeID3","NodeID4","NodeID5","NodeID6"])
