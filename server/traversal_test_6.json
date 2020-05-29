@@ -1,0 +1,85 @@
+{
+  "NodeID1": {
+      "info": {
+          "type": "user",
+          "name": "Pranav",
+          "Additional info": "goes here"
+      },
+      "food_item_connections": {"NodeID2":1.5, "NodeID3": 1.5, "NodeID4":4, "NodeID5":1.2, "NodeID6":1.1},
+      "user_connections": {"NodeID8": 0.7}
+  },
+  "NodeID2": {
+      "info": {
+          "type": "food_item",
+          "name": "Chicken Sandwhich",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1":1.5}
+  },
+  "NodeID3": {
+      "info": {
+          "type": "food_item",
+          "name": "Cheeseburger",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1":1.5}
+  },
+  "NodeID4": {
+      "info": {
+          "type": "food_item",
+          "name": "Hot Dog",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1":4}
+  },
+  "NodeID5": {
+      "info": {
+          "type": "food_item",
+          "name": "Hamburger",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1":1.2}
+  },
+  "NodeID6": {
+      "info": {
+          "type": "food_item",
+          "name": "Chili Cheese Fries",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1": 1.1}
+  },
+  "NodeID7": {
+      "info": {
+          "type": "food_item",
+          "name": "Pizza",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {},
+      "food_item_connections": {"NodeID9":1}
+  },
+  "NodeID8": {
+      "info": {
+          "type": "user",
+          "name": "Akshat",
+          "Additional info": "goes here"
+      },
+      "food_item_connections": {"NodeID9": 4},
+      "user_connections": {"NodeID1": 0.7}
+  },
+  "NodeID9": {
+      "info": {
+          "type": "food_item",
+          "name": "Pizza",
+          "Additional info": "goes here",
+          "RestaurantID":"b"
+      },
+      "user_connections": {"NodeID8": 4},
+      "food_item_connections": {"NodeID7":1}
+  }
+}
