@@ -1,0 +1,135 @@
+{
+  "NodeID1": {
+      "info": {
+          "type": "user",
+          "name": "Pranav",
+          "Additional info": "goes here"
+      },
+      "food_item_connections": {"NodeID2":1.5, "NodeID3": 1.5, "NodeID4":4, "NodeID5":1.2, "NodeID6":1.1},
+      "user_connections": {"NodeID13": 0.7}
+  },
+  "NodeID2": {
+      "info": {
+          "type": "food_item",
+          "name": "Chicken Sandwhich",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1":1.5}
+  },
+  "NodeID3": {
+      "info": {
+          "type": "food_item",
+          "name": "Cheeseburger",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1":1.5}
+  },
+  "NodeID4": {
+      "info": {
+          "type": "food_item",
+          "name": "Hot Dog",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1":2}
+  },
+  "NodeID5": {
+      "info": {
+          "type": "food_item",
+          "name": "Hamburger",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1":1.2}
+  },
+  "NodeID6": {
+      "info": {
+          "type": "food_item",
+          "name": "Chili Cheese Fries",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {"NodeID1": 1.1}
+  },
+  "NodeID7": {
+      "info": {
+          "type": "food_item",
+          "name": "Chicken Pizza",
+          "Additional info": "goes here",
+          "RestaurantID":"a"
+      },
+      "user_connections": {},
+      "food_item_connections": {"NodeID14":0.8}
+  },
+  "NodeID8": {
+      "info": {
+          "type": "food_item",
+          "name": "Pizza",
+          "Additional info": "goes here",
+          "RestaurantID":"null"
+      },
+      "user_connections": {},
+      "food_item_connections": {"NodeID14":0.9, "NodeID9": 0.9, "NodeID10": 0.9, "NodeID11": 0.9}
+  },
+  "NodeID9": {
+      "info": {
+          "type": "food_item",
+          "name": "Veggie Pizza",
+          "Additional info": "goes here",
+          "RestaurantID":"null"
+      },
+      "user_connections": {},
+      "food_item_connections": {"NodeID8": 0.9}
+  },
+  "NodeID10": {
+      "info": {
+          "type": "food_item",
+          "name": "Cheese Pizza",
+          "Additional info": "goes here",
+          "RestaurantID":"null"
+      },
+      "user_connections": {},
+      "food_item_connections": {"NodeID8": 0.9, "NodeID12": 0.9}
+  },
+  "NodeID11": {
+      "info": {
+          "type": "food_item",
+          "name": "Veggie Pizza",
+          "Additional info": "goes here",
+          "RestaurantID":""
+      },
+      "user_connections": {},
+      "food_item_connections": {"NodeID8": 0.9}
+  },
+  "NodeID12": {
+      "info": {
+          "type": "food_item",
+          "name": "Cheese Pizza",
+          "Additional info": "goes here",
+          "RestaurantID":"b"
+      },
+      "user_connections": {"NodeID13": 4},
+      "food_item_connections": {"NodeID10": 0.8}
+  },
+  "NodeID13": {
+      "info": {
+          "type": "user",
+          "name": "Akshat",
+          "Additional info": "goes here"
+      },
+      "food_item_connections": {"NodeID12": 4},
+      "user_connections": {"NodeID1": 0.7}
+  },
+  "NodeID14": {
+      "info": {
+          "type": "food_item",
+          "name": "Chicken Pizza",
+          "Additional info": "goes here",
+          "RestaurantID":"null"
+      },
+      "user_connections": {},
+      "food_item_connections": {"NodeID7":0.8, "NodeID8":0.9}
+  }
+}

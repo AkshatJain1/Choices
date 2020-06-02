@@ -5,7 +5,7 @@
           "name": "Pranav",
           "Additional info": "goes here"
       },
-      "food_item_connections": {"NodeID2":1.5, "NodeID3": 1.5, "NodeID4":4, "NodeID5":1.2, "NodeID6":1.1},
+      "food_item_connections": {"NodeID2":3.5, "NodeID3": 2.5, "NodeID4":4, "NodeID5":3.2, "NodeID6":1.1},
       "user_connections": {"NodeID8": 1}
   },
   "NodeID2": {
@@ -15,7 +15,7 @@
           "Additional info": "goes here",
           "RestaurantID":"a"
       },
-      "user_connections": {"NodeID1":1.5}
+      "user_connections": {"NodeID1":3.5}
   },
   "NodeID3": {
       "info": {
@@ -24,7 +24,7 @@
           "Additional info": "goes here",
           "RestaurantID":"a"
       },
-      "user_connections": {"NodeID1":1.5}
+      "user_connections": {"NodeID1":2.5}
   },
   "NodeID4": {
       "info": {
@@ -42,7 +42,7 @@
           "Additional info": "goes here",
           "RestaurantID":"a"
       },
-      "user_connections": {"NodeID1":1.2}
+      "user_connections": {"NodeID1":3.2}
   },
   "NodeID6": {
       "info": {

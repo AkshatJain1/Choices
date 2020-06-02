@@ -16,20 +16,20 @@ limit_food_items = 10   #calcula
 
 #controls (provide description)
 #have to tune, can possibly tune through a neural network type structure)
-dist_user_buffer = 3
-dist_user_growth = 2
+dist_user_buffer = 2
+dist_user_growth = 7
 
-dist_user_item_buffer = 5
-dist_user_item_growth = 5
+dist_user_item_buffer = 2
+dist_user_item_growth = 7
 
-user_item_pref_buffer = 1/2
-user_item_pref_growth = 15
+user_item_pref_buffer = 0
+user_item_pref_growth = 10
 
 dist_menu_weight_buffer = 2
-menu_weight_growth = 5
+menu_weight_growth = 3
 
-user_sim_buffer = 0
-user_sim_growth = 5
+user_sim_buffer = 0.5
+user_sim_growth = 7
 
 
 
@@ -96,6 +96,7 @@ def user_item_traversal(curr_user_id, menu_items, relpath):
     fringe_deque = collections.deque()
     fringe_deque.append(curr_user_id)
 
+    #Note: figure out how to makesure the latest menu item doesn't get multiplied by all, but only by the best, as the multiplication of numbers will eventually lead to 0 issue
     similar_ext_mul = 1
     user_marked = {}
     menu_item_marked = {}
@@ -116,7 +117,7 @@ def user_item_traversal(curr_user_id, menu_items, relpath):
     # for menu_item in menu_items:
     #     currentUserMenuWeights[menu_item] = 0
 
-    #set the menu items all to 1
+    #set the menu items all to 0
     for menu_item in menu_items:
         currentUserMenuWeights[menu_item] = 0
 
@@ -283,31 +284,33 @@ def curr_user_item_pref(curr_user_id, user_id,food_item_id, latest_menu_item, si
 
         #NOTE NEED TO CHANGE THIS SO THERE IS DISTANCE FUNCTION FOR BOTH ITEM TO USER AND USER TO USER
 
+
+
+        currentMenuCount[latest_menu_item] += 1
+
+        print("________________________WEIGHT CALCULATION________________________")
+        print("FOOD_ID ", food_item_id)
+        print("USER_ID ", user_id)
+        print("CURR USER ID ", curr_user_id)
         dist_user_based_pref = dist_based_curr_user_pref(dist_curr_to_user, curr_user_id, user_id)
         dist_item_based_pref = dist_based_user_item_pref(dist_curr_to_item, user_id, food_item_id)
         num_menu_item_count = num_menu_item_so_far(currentMenuCount[latest_menu_item], dist_menu_weight_buffer, menu_weight_growth)
-
-        currentMenuCount[latest_menu_item] += 1
-        weightToAdd = 1
         print("DIST USER BASED PREF ", dist_user_based_pref)
         print("DIST ITEM BASED PREF ", dist_item_based_pref)
+        print("FIX HOW NUM MENU ITEM COUNT WORKS (MAYBE) NEEDS TO REDUCE WEIGHT AS NUM ITEMS AWAY FROM THE USER")
         print("NUM MENU ITEM COUNT ", num_menu_item_count)
-        weightToAdd *= dist_user_based_pref * dist_item_based_pref * num_menu_item_count
-        print("WEIGHT TO ADD SO FAR ", weightToAdd)
-        # weightToAdd *= (num_weight_dec_factor / currentMenuCount[latest_menu_item]*num_weight_inc_factor)
-        weightToAdd *= similar_ext_mul
 
+        weightToAdd = dist_user_based_pref * dist_item_based_pref * num_menu_item_count * similar_ext_mul
+
+        print("WEIGHT TO ADD ", weightToAdd)
+        # weightToAdd *= (num_weight_dec_factor / currentMenuCount[latest_menu_item]*num_weight_inc_factor)
 
         weightSoFar = currentUserMenuWeights.get(latest_menu_item, 0)
 
         #no connection whatsoever, make so its as if there is no change.
         #NOTE this will be critical to figuring out how to stop (like if there are too many 0s)
-        if weightToAdd < 0.01:
-            return weightSoFar
-        elif weightSoFar == 0:
-            return weightToAdd
-        else:
-            return weightSoFar * weightToAdd
+
+        return weightSoFar + weightToAdd
 
 
 def num_menu_item_so_far(menu_item_count, dist_menu_weight_buffer, menu_weight_growth):
@@ -321,18 +324,17 @@ def  dist_based_user_item_pref(dist_curr_to_item, user_id, food_item_id):
 
 
     # return obj_user_item_pref(user_id, food_item_id) * (dist_dec_factor / ((dist_curr_to_item + dist_buffer)*dist_inc_factor + 1))
-    return obj_user_item_pref(user_id, food_item_id)  * inverse_sigmoid(dist_curr_to_item, dist_user_item_buffer, dist_user_item_growth)
+    return obj_user_item_pref(user_id, food_item_id)  * inverse_sigmoid(dist_curr_to_item / 2, dist_user_item_buffer, dist_user_item_growth)
 
 
 #change the factors that do this to user user factors
 def dist_based_curr_user_pref(dist_curr_to_user, curr_user_id, user_id):
-    print("diff curr to user ", curr_user_id, user_id,dist_curr_to_user)
-    # return user_similarity(curr_user_id, user_id) * (dist_user_dec_factor / ((dist_curr_to_user + dist_buffer)*dist_user_inc_factor + 1))
-    print("DISTANCELKDJLKFLDKFJLKSDJFLKJSDLKFJLKSDF_____DISTANDCE")
-    print(user_id)
-    print(curr_user_id)
-    print("DIST INV SIGMOID ", inverse_sigmoid(dist_curr_to_user, dist_user_buffer, dist_user_growth))
-    return user_similarity(curr_user_id, user_id) * inverse_sigmoid(dist_curr_to_user, dist_user_buffer, dist_user_growth)
+    # print("diff curr to user ", curr_user_id, user_id,dist_curr_to_user)
+    # # return user_similarity(curr_user_id, user_id) * (dist_user_dec_factor / ((dist_curr_to_user + dist_buffer)*dist_user_inc_factor + 1))
+    # print("DISTANCELKDJLKFLDKFJLKSDJFLKJSDLKFJLKSDF_____DISTANDCE")
+    #
+    # print("DIST INV SIGMOID ", inverse_sigmoid(dist_curr_to_user, dist_user_buffer, dist_user_growth))
+    return user_similarity(curr_user_id, user_id) * inverse_sigmoid(dist_curr_to_user / 2, dist_user_buffer, dist_user_growth)
 
 def inverse_sigmoid(x,inflection_point=0, growth=1):
     return 1 / (1 + math.exp(growth * (x - inflection_point)))
@@ -343,9 +345,22 @@ def sigmoid(x, inflection_point=0, growth=1):
 def obj_user_item_pref(user_id, food_item_id):
 
 
-    objective_pref = db[user_id]['food_item_connections'].get(food_item_id, -100)
+    #so that a "neurtral" is considered a middle rating, and this way we can add and substract to a rating
+    objective_pref = (db[user_id]['food_item_connections'].get(food_item_id, -100) - (ratings_scale / 2)) / ratings_scale
     print("Objective_pref ", objective_pref)
-    return sigmoid((db[user_id]['food_item_connections'].get(food_item_id, -100) / ratings_scale), user_item_pref_buffer, user_item_pref_growth)
+
+    internalsign = 1
+
+    if objective_pref != 0:
+        sign = objective_pref / abs(objective_pref)
+    else:
+        sign = 1
+
+    if objective_pref <= -20:
+        internalsign = -1
+
+
+    return sign * sigmoid(internalsign * abs(objective_pref), user_item_pref_buffer, user_item_pref_growth)
 
 
 #how similar a user is to another
@@ -362,4 +377,4 @@ def user_similarity(user_id_1, user_id_2):
 
 #this function will be complicated enough
 def item_item_similarity(dist_curr_to_item, item_id_1, item_id_2, similar_ext_mul):
-    return similar_ext_mul * (db[item_id_1]['food_item_connections'].get(item_id_2, -100))
+    return similar_ext_mul * (db[item_id_1]['food_item_connections'].get(item_id_2, 0))
