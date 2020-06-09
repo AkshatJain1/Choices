@@ -46,7 +46,7 @@ from food_recommendation import user_item_traversal
 #Same as Traversal Test 4
 #Let's say Pranav already had pizza, and kinda liked it (3 star weight), versus his already lack of preference for any of the other itesm
 #The's kinda into it and could try it again
-user_item_traversal("NodeID1", ["NodeID2","NodeID3","NodeID4","NodeID5","NodeID6", "NodeID7"], 'traversal_test_5.json')
+# user_item_traversal("NodeID1", ["NodeID2","NodeID3","NodeID4","NodeID5","NodeID6", "NodeID7"], 'traversal_test_5.json')
 #Final Output:
 # Final Current User Menu Weights
 #{'Hot Dog': 0.9880671556260959, 'Pizza': 0.7736783907595969, 'Chicken Sandwhich': 0.04738051460946453, 'Cheeseburger': 0.04738051460946453, 'Hamburger': 0.019821330271982386, 'Chili Cheese Fries': 0.014759901665130094}
@@ -66,7 +66,7 @@ user_item_traversal("NodeID1", ["NodeID2","NodeID3","NodeID4","NodeID5","NodeID6
 #Let's say Pranav hasn't had chicken pizza, and in fact he hasn't had any pizza
 #Let's say Akshat hasn't had veggie pizza, peppersoni pizza, or chicken pizza, but he has had cheese pizza, but not at the same resturaunt as Pranav.
 #Let's see where Cheese Pizza ends up in the algorithm
-# user_item_traversal("NodeID1", ["NodeID2","NodeID3","NodeID4","NodeID5","NodeID6", "NodeID7"], 'traversal_test_7.json')
+user_item_traversal("NodeID1", ["NodeID2","NodeID3","NodeID4","NodeID5","NodeID6", "NodeID7"], 'traversal_test_7.json')
 
 
 #Note: Traversal Test 8

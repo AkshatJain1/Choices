@@ -105,18 +105,6 @@ def user_item_traversal(curr_user_id, menu_items, relpath):
     user_marked[curr_user_id] = True
     dist_from_curr_user[curr_user_id] = 0
 
-
-
-
-
-    #using this to figure out the intermediate connections, instead of directly doing to user at hand, seems unnecessary tho cuz its iterative and not recursive
-    # userMenuWeights = {{}}
-
-
-    #set the menu_items all to 0
-    # for menu_item in menu_items:
-    #     currentUserMenuWeights[menu_item] = 0
-
     #set the menu items all to 0
     for menu_item in menu_items:
         currentUserMenuWeights[menu_item] = 0
@@ -187,7 +175,7 @@ def user_item_traversal(curr_user_id, menu_items, relpath):
 
                 if adj_node_id not in UserMenuRatings:
                     UserMenuRatings[adj_node_id] = {}
-                elif node_id not in UserMenuRatings[adj_node_id]:
+                if node_id not in UserMenuRatings[adj_node_id]:
                     #warning: redudant computation here as computed in the curr user pref funciton already
                     UserMenuRatings[adj_node_id][node_id] = obj_user_item_pref(adj_node_id, node_id)
 
@@ -221,30 +209,11 @@ def user_item_traversal(curr_user_id, menu_items, relpath):
                 if not current_food_item_marked.get(node_id, False):
 
                     # do similarity between items test here
-                    # checks to see if there is a previous food item (which is the extended food item) to modify similarity multiplier, otherwise multiplier is 1
-                    # if prev_food_item:
-                    #     dist_curr_to_item = dist_from_curr_user.get(node_id, 0)
-                    #     similar_ext_mul = item_item_similarity(dist_curr_to_item, node_id, prev_food_item,
-                    #                                            similar_ext_mul)
-                    # else:
-                    #     similar_ext_mul = 1
                     current_food_item_marked[node_id] = True
 
-                    # if(not prev_food_item):
 
-
-
-                    #CONTINUE DFS LOOKING FOR SIMILAR FOOD ITEMS (WILL SET LIMIT)
-                    #make sure we limit the number of adjacent nodes
-                    #MAKE SURE WE CHECK FOR MENU ITEMS FIRST
                     for adj_node_id in db[node_id]['food_item_connections']:
                         if not current_food_item_marked.get(adj_node_id, False):
-                            # if debug_step == 7:
-                            #     print("adjacent food node ", adj_node_id)
-                            #     print('slkdjflksdjflksdjlfksjdlk')
-                            #     sys.exit(1)
-                            # else:
-                            #     sys.exit(1)
                             if adj_node_id not in menu_items:
                                 fringe_deque.appendleft((similar_ext_mul, node_id))
                                 fringe_deque.appendleft(adj_node_id)
@@ -262,6 +231,8 @@ def user_item_traversal(curr_user_id, menu_items, relpath):
 
     print("\nFinal Current User Menu Weights")
     print({db[k]['info']['name']:v for (k,v) in sorted(currentUserMenuWeights.items(), key = lambda item : item[1], reverse = True)})
+    print("\nFinal User Circle Menu Weights")
+    print(UserMenuRatings)
 
 
 #Testing functions, will greatly develop in futuredist_from_curr_user = {}
@@ -273,36 +244,18 @@ def curr_user_item_pref(curr_user_id, user_id,food_item_id, latest_menu_item, si
 
         if latest_menu_item not in currentMenuCount:
             currentMenuCount[latest_menu_item] = 0
-        else:
-            print(latest_menu_item)
 
         dist_curr_to_item = dist_from_curr_user.get(food_item_id, 0)
         dist_curr_to_user = dist_from_curr_user.get(user_id, 0)
 
-        print("Dist curr to user ", dist_curr_to_user)
-
-
-        #NOTE NEED TO CHANGE THIS SO THERE IS DISTANCE FUNCTION FOR BOTH ITEM TO USER AND USER TO USER
-
-
-
         currentMenuCount[latest_menu_item] += 1
 
-        print("________________________WEIGHT CALCULATION________________________")
-        print("FOOD_ID ", food_item_id)
-        print("USER_ID ", user_id)
-        print("CURR USER ID ", curr_user_id)
         dist_user_based_pref = dist_based_curr_user_pref(dist_curr_to_user, curr_user_id, user_id)
         dist_item_based_pref = dist_based_user_item_pref(dist_curr_to_item, user_id, food_item_id)
         num_menu_item_count = num_menu_item_so_far(currentMenuCount[latest_menu_item], dist_menu_weight_buffer, menu_weight_growth)
-        print("DIST USER BASED PREF ", dist_user_based_pref)
-        print("DIST ITEM BASED PREF ", dist_item_based_pref)
-        print("FIX HOW NUM MENU ITEM COUNT WORKS (MAYBE) NEEDS TO REDUCE WEIGHT AS NUM ITEMS AWAY FROM THE USER")
-        print("NUM MENU ITEM COUNT ", num_menu_item_count)
 
         weightToAdd = dist_user_based_pref * dist_item_based_pref * num_menu_item_count * similar_ext_mul
 
-        print("WEIGHT TO ADD ", weightToAdd)
         # weightToAdd *= (num_weight_dec_factor / currentMenuCount[latest_menu_item]*num_weight_inc_factor)
 
         weightSoFar = currentUserMenuWeights.get(latest_menu_item, 0)
